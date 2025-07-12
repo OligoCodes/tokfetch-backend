@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json()); // Serve frontend files
+app.use(express.json());
 
 app.get('/api/tiktok', async (req, res) => {
   const url = req.query.url;
@@ -15,9 +15,9 @@ app.get('/api/tiktok', async (req, res) => {
   if (!url) {
     return res.status(400).json({ error: 'No TikTok URL provided' });
   }
-  if (res.status === 429) {
-  alert("Daily limit exceeded. Try again tomorrow.");
-  }
+
+  console.log("Fetching TikTok URL:", url);
+  console.log("Using API Key:", process.env.API_KEY);
 
   const apiURL = `https://tiktok-download-without-watermark.p.rapidapi.com/analysis?url=${url}&hd=0`;
 
@@ -31,14 +31,15 @@ app.get('/api/tiktok', async (req, res) => {
     });
 
     const data = await response.json();
-    
+    console.log("Fetched data:", data);
+
     res.json(data);
   } catch (err) {
-    console.error(err);
+    console.error("Error fetching TikTok data:", err);
     res.status(500).json({ error: 'Failed to fetch TikTok data' });
   }
 });
 
 app.listen(PORT, () => {
   console.log(`✅️ Server running on http://localhost:${PORT}`);
-})
+});
